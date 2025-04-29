@@ -6,7 +6,7 @@ website:
   title: "AI-Enhanced E-Commerce Data Engineering"
   navbar:
     left:
-      - href: introduction.qmd
+      - href: index.qmd
         text: Introduction
       - href: rag.qmd
         text: RAG
