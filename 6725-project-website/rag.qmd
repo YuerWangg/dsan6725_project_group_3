@@ -1,0 +1,43 @@
+# Retrival Argumented Generation
+
+## Knowledge Base Content: 
+
+This RAG (Retrieval-Augmented Generation) system is designed to process and analyze structured and semi-structured data from various file formats, including JSON, CSV, XML, Parquet, and Excel, and saved in the faiss index in parquet form. It ingests data, cleans and preprocesses it (e.g., standardizing column names, converting text-based numbers like "1.5K+" to numeric values), and splits the content into manageable chunks. These chunks are then embedded into a vector space using the HuggingFace BGE model, enabling efficient similarity-based retrieval. The system stores these embeddings in FAISS indexes for quick lookup and supports hybrid retrieval methods like BM25 and ensemble techniques to improve accuracy.
+
+## Retrieval Augmented Generation
+
+The RAG system also includes specialized indexes for **transformation rules**, **user prompts**, and **protential data schemas**, allowing it to provide context-aware solutions for common data processing tasks (e.g., handling missing values, calculating revenue, or cleaning product descriptions), specific to each file type. Below are some sample cleaning code to that are commonly used among all data file types, that are stored in the faiss indexes. 
+
+[
+
+    "Remove null values: df.dropna()",
+
+    "Fill null values with a specific value: df.fillna(value)",
+
+    "Standardize column names: df.columns = df.columns.str.lower().str.replace(' ', '_')",
+
+    "Remove duplicate rows: df.drop_duplicates()",
+
+    "Convert data types: df['column'] = df['column'].astype(type)",
+
+    "Filter rows based on a condition: df[df['column'] > value]",
+
+    "Rename columns: df.rename(columns={'old_name': 'new_name'})",
+
+    "Drop columns: df.drop(columns=['column_name'])",
+
+    "Sort dataframe: df.sort_values(by='column_name')",
+]
+
+
+## MultiVectorRetriever
+
+By combining multiple retrievers for each faiss index into a unified MultiVectorRetriever, it ensures comprehensive results for queries. The system is integrated with LangChain to facilitate question-answering workflows, where retrieved documents augment the responses of a language model. 
+
+## Summary and limitation
+
+Overall, this RAG pipeline enhances data accessibility and analysis, making it particularly useful for e-commerce, inventory management, and financial calculations. 
+
+However, the limitations of RAG and it's connection to the code-generating agent exist. Based on the results of several tryouts, the agent still hallucinates; the RetrievalQA chain (via LangChain) helps mitigate this, but if the retriever returns weak matches, the LLM might still generate incorrect or unsupported responses.
+
+The **transformation_rules** and **user_prompts** indexes are pre-defined. If a user asks a question requiring dynamic or domain-specific logic (e.g., custom aggregations), the agent might generate arbitrary code instead of following documented rules.

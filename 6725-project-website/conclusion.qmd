@@ -1,0 +1,53 @@
+# Conclusion & Future Improvement
+## Summary
+This project develops an AI-enhanced data engineering system for e-commerce datasets, aiming to automate format detection, schema inference, cleaning, transformation, and storage of messy real-world data from platforms like Amazon, eBay, and Shopify.
+It uses RAG technique to let LLM retrieve example cleaning process from vector databse and collaborate with three-agent architecture.
+
+**Retrieval and Prompt Generation Agent**: Detects file format, extracts schema, queries a FAISS-based knowledge base, and generates structured prompts.
+
+**Code Generation Agent**: Generates Python cleaning code using LLMs (GPT-4o).
+
+**Code Execution Agent**: Runs the generated code, handles errors, and ensures successful data cleaning.
+
+The system trains on real, noisy, and multi-format datasets and simulates real-world scenarios where schemas vary significantly.
+By combining Retrieval-Augmented Generation (RAG) techniques and LLM-driven code generation, the project aims to substantially reduce manual effort in preparing e-commerce data for analytics and machine learning tasks.
+
+## Impact
+
+- Increased scalability and speed of e-commerce data pipelines.
+
+- Clean the data to visualization ready status Effectively.
+
+- Provide Higher accuracy and consistency in data cleaning across varied formats and messy schemas.
+
+- Improved productivity for analysts and ML engineers working with large, heterogeneous datasets.
+
+## Limitations of the Current Implementation
+- **Model Dependence**: Success heavily depends on the quality of prompts and the performance of LLMs (GPT-4o) at each time's generation, which may not always generate perfect code for complex or unseen schemas.
+
+- **Limited Error Handling**: The current re-generation loop in the Code Execution Agent might not handle deeply nested errors or corner cases (e.g., nested JSON/XML structures) gracefully. Also, the it might cost time to regenerate code.
+
+- **Schema Generalization**: Matching new data to historical schemas via FAISS works well if the database is rich, but performance may degrade if encountering completely novel schemas.
+
+- **Evaluation Subjectivity**: The evaluation process might be ambiguous by the agent evaluation
+
+- **Test Data Bias**: Testing on the different datasets may have different test results and not all corner cases may not considered.
+
+## Potential Future Improvements and Extensions
+- **Error Categorization and Dynamic Recovery** [^1] : Instead of simple retrying, classify the type of code failure and adjust prompt templates dynamically based on error type (e.g., missing column, data type mismatch).
+
+[^1]: https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00660/120911/Automatically-Correcting-Large-Language-Models
+
+- **Fine-Tuning**: Fine-tune the LLM specifically on e-commerce transformation tasks for better contextual understanding and more reliable code generation.
+
+- **Schema Evolution Handling** [^2] : Introduce automatic schema version tracking, so if source platforms evolve (e.g., Amazon changes product attributes), the system can adapt.
+
+[^2]: https://web.eecs.umich.edu/~mozafari/winter2014/eecs684/papers/prism.pdf
+
+- **Feedback Loop with Reinforcement Learning**: Implement a reinforcement learning (RL) feedback loop where better cleaning outcomes (e.g., fewer missing values, consistent schemas) are rewarded, improving agent performance over time.
+
+- **Extend to Semi-Structured and Unstructured Data: Expand capability beyond strictly tabular formats to include semi-structured (HTML product pages) or unstructured text (user reviews, comments) and specifically focusing on improving the model's performance on complex file formats.
+
+- **Add A Multi-Agent Coordination** [^3] : Introduce a coordinator agent that dynamically assigns task priorities and supervise the process(e.g., prioritize missing value imputation before type conversion if data is highly incomplete).
+
+[^3]: https://integrail.ai/blog/multi-agent-ai-coordination

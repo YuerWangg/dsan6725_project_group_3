@@ -1,0 +1,4 @@
+# Demo
+
+This is a short demo about how to use this project
+{{< video pics/live_demo.mov >}}

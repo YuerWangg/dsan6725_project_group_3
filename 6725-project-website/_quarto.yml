@@ -1,0 +1,35 @@
+project:
+  type: website
+
+website:
+  title: "AI-Enhanced E-Commerce Data Engineering"
+  navbar:
+    left:
+      - href: introduction.qmd
+        text: Introduction
+      - href: rag.qmd
+        text: RAG
+      - href: agent.qmd
+        text: Multi-Agents System
+      - href: evaluation.qmd
+        text: Evaluation
+      - href: conclusion.qmd
+        text: Conclusion
+      - href: demo.qmd
+        text: Demo
+    tools:
+      - icon: github
+        menu:
+          - text: Code
+            href:  https://github.com/gu-dsan6725/spring-2025-final-project-project-group-3
+          - text: Data
+            href:  https://github.com/gu-dsan6725/spring-2025-final-project-project-group-3/tree/main/data
+
+format:
+  html:
+    theme: morph
+    css: styles.css
+    toc: true
+
+
+

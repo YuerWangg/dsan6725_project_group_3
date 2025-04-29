@@ -1,0 +1,97 @@
+## Overview
+The evaluation process tests two main aspects: quality assessment (how effectively it cleans and processes data) and format consistency (how well the system handles different file formats). The system uses both the RAGAS framework for evaluation and custom metrics.
+
+
+## Quality Evaluation with RAGAS
+
+In this evaluation, we assessed how well the Agent generated cleaning prompt are aligned with our best practices for different file formats (JSON, XLSX, XML, CSV).
+
+The quality assessment uses the RAGAS framework to evaluate three key dimensions: 
+ - Faithfulness: Measures how much the AI stuck to the given reference materials.
+ - Answer Relevancy: Measures how well the AI answered the question asked.
+ - Answer Correctness: Measures whether the AI's response was factually correct based on the best practices provided.
+
+### Methodology
+We first constructed a dataset pairing each AI-generated response with:
+ - A user input question (e.g., "How to clean CSV data?"),
+ - Retrieved context (reference best practices for the format),
+ - A ground-truth reference answer.
+
+Using RAGAS, we scored each response individually on faithfulness, relevancy, and correctness.
+
+Instead of immediately averaging the results, we first recorded per-example scores for each prompt, providing detailed insights into how the AI performed across different file formats.
+
+Finally, we computed an overall average score for each metric to summarize model performance.
+
+### Results
+| Question                | Faithfulness | Answer Relevancy | Answer Correctness |
+|--------------------------|--------------|------------------|--------------------|
+| How to clean JSON data   | 0.39         | 0.62             | 0.46               |
+| How to clean XLSX data   | 0.54         | 0.74             | 0.72               |
+| How to clean XML data    | 0.64         | 0.74             | 0.37               |
+| How to clean CSV data    | 0.62         | 0.77             | 0.68               |
+| **Summary**              | **0.55**     | **0.72**         | **0.56**           |
+
+### Key Findings
+Relevancy was the strongest:
+AI mostly stayed on topic and answered the right questions.
+
+Faithfulness and correctness were moderate:
+The AI sometimes added extra information or missed details from the references, especially for more complex formats like JSON and XML.
+
+CSV and XLSX responses were the best:
+Cleaning instructions for CSV and Excel files were generally more faithful and factually correct compared to JSON and XML.
+
+## Format Consistency Evalution
+In addition to quality evaluation, we assessed the consistency of the AI-generated outputs across different data formats.
+The goal was to ensure that the AI not only answered correctly, but did so consistently even when facing different types of input files.
+
+### Metrics
+We measured consistency along three axes:
+ - Prompt Similarity:
+    How similar the AI-generated cleaning instructions were across different formats.
+ - Code Similarity:
+    How similar the cleaning code outputs were across different formats.
+ - Output Similarity:
+    How similar the final cleaned datasets were after applying the AI-generated cleaning instructions.
+
+### Methodology
+### Data for evaluation:
+Synthetic dataset: 
+	DATA 1 (evaluation_data.csv):
+      	 - Schema Consistency
+      	 - Mimic real-world datatype and formatting
+      	 - Controlled Diversity: diverse set of categories allow the agent see different kinds of inputs
+      	 - Edge-Case Readiness (Basic): missing values, 0 reviews, no prime membership, high and moderately low scores for rating. 
+	DATA 2 (edge cases.csv):
+		 - Star Ratings: Includes very low (1.0) and out-of-bound (5.5) star ratings, and some missing values (NaN).
+		 - ReviewsCount: Includes extreme values like 0, 1, 5, 10,000, 50,000 — to test how well your system handles abnormal popularity.
+		 - Price: Includes ultra-low ($0.01), ultra-high ($19,999.99), missing prices (empty string), and normal prices.
+		 - Prime: Only 50% are Prime eligible (more variability).
+		 - Order/Page Number: Randomized across a wider range (order up to 20, page up to 10).
+		 - Timestamps: Random timestamps across a full day instead of just the first hour.
+
+For each dataset and format (CSV, JSON, XLSX, XML):
+ - Prompt Similarity:
+    We tokenized the cleaning prompts and computed the Jaccard similarity based on overlapping words.
+ - Code Similarity:
+    We cleaned the generated code (removing comments and docstrings), normalized whitespace, and computed token-based Jaccard similarity.
+ - Output Similarity:
+    We compared the final cleaned datasets by:
+     - Checking schema similarity (matching columns and types),
+     - Hashing row contents and comparing the resulting hash sets,
+     - Computing a weighted score: 40% schema match + 60% content match.
+
+### Results
+| File                  | Formats Tested        | Prompt Similarity | Code Similarity | Output Similarity |
+|-----------------------|------------------------|-------------------|-----------------|-------------------|
+| edge_cases.csv         | csv, json, xlsx, xml    | 0.54              | 0.61            | 1.0               |
+| evaluation_data.csv    | csv, json, xlsx, xml    | 0.60              | 0.65            | 1.0               |
+
+
+### Findings
+Prompt Similarity and Code Similarity were moderately high (~0.54–0.65), reflecting minor adjustments made for different file types.
+
+Output Similarity achieved a perfect score of 1.0, demonstrating that despite minor wording or code differences, the AI consistently produced identical final cleaned outputs across formats.
+
+This consistency highlights the robustness of the AI data cleaning agent, ensuring reliability even when working with heterogeneous and messy input data.
