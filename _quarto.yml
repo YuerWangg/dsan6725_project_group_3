@@ -1,5 +1,6 @@
 project:
   type: website
+  output-dir: docs
 
 website:
   title: "AI-Enhanced E-Commerce Data Engineering"
@@ -31,5 +32,5 @@ format:
     css: styles.css
     toc: true
 
-
+site-url: https://gu-dsan6725.github.io/spring-2025-final-project-project-group-3/
 
